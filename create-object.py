@@ -23,7 +23,10 @@ def uploadObject(s3Client, bucket, name, key, contentType, metadata={}):
 
     ## Start TODO 5: create a object by transferring the file to the S3 bucket, 
     ## set the contentType of the file and add any metadata passed to this function.
-    
+    with open(name, mode='rb') as file:
+        data=file.read()
+        
+    s3Client.put_object(Bucket=bucket, Body=data, Metadata=metadata, Key=key, ContentType=contentType)
     
     
     ## End TODO 5
