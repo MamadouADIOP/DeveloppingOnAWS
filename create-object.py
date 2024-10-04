@@ -28,7 +28,16 @@ def uploadObject(s3Client, bucket, name, key, contentType, metadata={}):
         
     s3Client.put_object(Bucket=bucket, Body=data, Metadata=metadata, Key=key, ContentType=contentType)
     
-    
+    #From the lab solution this command should have worked too
+    #   response = s3Client.upload_file(
+    #     Bucket=bucket, 
+    #     Key=key,
+    #     Filename=name,
+    #     ExtraArgs={
+    #         'ContentType': contentType,
+    #         'Metadata': metadata
+    #         }
+    # )
     ## End TODO 5
     return "Finished creating object\n"
     
