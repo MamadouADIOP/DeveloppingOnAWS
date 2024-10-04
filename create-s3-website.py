@@ -35,19 +35,29 @@ def uploadWebsiteFiles(s3Client, bucket):
         contentType = obj['Content']
         ## Start TODO 8: Upload the files to the bucket as the array is 
         ## iterated through, setting the content type explicitly
-        
-        
+        with open(filename, 'br') as file:
+            data = file.read()
+            
+        s3Client.put_object(Bucket=bucket, Body=data, ContentType=contentType,Key=key)
 
         ## End TODO 8
 
 def enableWebHosting(s3Client, bucket):
     ## Start TODO 9: enable S3 web hosting using the objects you uploaded in the last method 
     ## as the index and error document for the website.
+    s3Client.put_public_access_block(Bucket=bucket, 
+    PublicAccessBlockConfiguration={
+        'BlockPublicPolicy':False})
     
+    website_configuration={
+        'ErrorDocument':{
+            'Key':'error.html'},
+        'IndexDocument':{
+            'Suffix':'index.html'}}
+    s3Client.put_bucket_website(Bucket=bucket, WebsiteConfiguration=website_configuration)
     
 
     ## End TODO 9
-
 def allowAccessFromWeb(s3Client, bucket):
     bucket_policy = {
       'Version': '2012-10-17',
@@ -56,14 +66,12 @@ def allowAccessFromWeb(s3Client, bucket):
           'Principal': '*',
           'Action': ['s3:GetObject'],
           'Resource': "arn:aws:s3:::" + bucket + '/*'
-        }]
-    }
+        }]}
     bucket_policy = json.dumps(bucket_policy)
 
     ## Start TODO 10: Apply the provided bucket policy to the website bucket 
     ## that allows your objects to be accessed from the internet.
-    
-
+    s3Client.put_bucket_policy(Bucket=bucket, Policy=bucket_policy)
     
     ## End TODO 10
     
