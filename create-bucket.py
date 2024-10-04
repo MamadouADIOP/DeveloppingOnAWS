@@ -27,7 +27,7 @@ def verifyBucketName(s3Client, bucket):
         ## Start TODO 2: enter a command that will check if a bucket already exists in AWS
         ## with the name built from your ini file input.
         
-
+        s3Client.head_bucket(Bucket=bucket)
 
         ## End TODO 2
 
@@ -53,8 +53,11 @@ def createBucket(s3Client, name):
 
     # Start TODO 3: Create a new bucket in the users current region 
 
-    
-    
+    if current_region=='us-east-1':
+        # TODO: write code...
+        s3Client.create_bucket(Bucket=name)
+    else:
+        s3Client.create_bucket(Bucket=name,  CreateBucketConfiguration= {  'LocationConstraint': current_region})
     # End TODO 3:
 
     print('Success!')
@@ -62,9 +65,9 @@ def createBucket(s3Client, name):
 def verifyBucket(s3Client, bucket):
     ## Start TODO 4: Complete the function so that it will 
     ## pause and only proceed after the bucket exists.
-  
-  
-
+    waiter = s3Client.get_waiter('bucket_exists')
+    waiter.wait(Bucket=bucket)
+    
     ## End TODO 4
     print('The bucket:' + bucket + ' is now available.')
 
@@ -78,7 +81,7 @@ def readConfig():
 ## TODO 1: Create an S3 client to interact with the service and pass 
 ## it to the main function that will create the buckets
 
-
+client=boto3.client('s3')
 
 ## End TODO 1
 
