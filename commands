@@ -8,3 +8,36 @@ to list all objects under  notes-bucket-146380728 bucket
 aws s3 ls notes-bucket-146380728
 Display bucket object content
  aws s3 cp s3://notes-bucket-146380728/notes.csv - 
+ To sync local files with s3 bucket
+aws s3 sync ./html s3://notes-bucket-146380728
+
+Enable s3 website hosting using aws s3
+aws s3 website s3://notes-bucket-146380728 --index-document index.html --error-document error.html
+
+Enable s3 website hosting using low level api s3api and website.json file
+aws s3api put-bucket-website --bucket notes-bucket-146380728 --website-configuration file://website.json
+Replace bucket name from policy.json file
+ bucketname=notes-bucket-146380728
+ 
+find and replace [BUCKET] by bucket name
+sed -s -i "s/\[BUCKET\]/notes-bucket-146380728/" policy.json
+Disable block public policy
+
+aws s3api put-public-access-block --bucket notes-bucket-146380728  --public-access-block-configuration "BlockPublicPolicy=false"
+
+
+Apply bucket policy to the website
+
+aws s3api put-bucket-policy --bucket notes-bucket-146380728 --policy file://policy.json
+
+Sets the region in the region variable
+
+
+region=$(curl http://169.254.169.254/latest/meta-data/placement/region -s)
+
+Build url to s3 bucket hosted website
+
+url=http://notes-bucket-146380728.s3-website-ap-southeast-1.amazonaws.com  Or
+
+url=http://notes-bucket-146380728.s3-website.ap-southeast-1.amazonaws.com
+
