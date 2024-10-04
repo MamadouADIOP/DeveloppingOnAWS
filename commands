@@ -1,0 +1,6 @@
+command to write text on commands file
+'echo << EOF > commands'
+'aws s3 ls'
+'EOF'
+command to list all buckets
+aws s3 ls
